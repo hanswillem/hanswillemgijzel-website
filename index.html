@@ -166,6 +166,11 @@
             new Image().src = "images/face_happy.png";
 
             const img = document.getElementById("face");
+            
+            // Open Instagram when face is clicked
+            img.addEventListener('click', () => {
+                window.open('https://www.instagram.com/hanswillemgijzel/', '_blank');
+            });
             const SAD = "images/face_sad.png";
             const HAPPY = "images/face_happy.png";
 
