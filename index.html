@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Hans Willem Gijzel</title>
+        <style>
+            :root {
+                --text: #202124;
+                --subtle: #5f6368;
+                --blue: #1a73e8;
+                --border: #dadce0;
+                --bg: #ffffff;
+                --btn-bg: #f8f9fa;
+                --btn-bg-hover: #eef0f1;
+            }
+            * {
+                box-sizing: border-box;
+            }
+            html,
+            body {
+                height: 100%;
+            }
+            body {
+                margin: 0;
+                font:
+                    14px/1.45 system-ui,
+                    -apple-system,
+                    Segoe UI,
+                    Roboto,
+                    Helvetica,
+                    Arial,
+                    sans-serif;
+                color: var(--text);
+                background: var(--bg);
+            }
+
+            .wrap {
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 160px 24px 72px;
+            }
+
+            .row {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .icon {
+                width: 72px;
+                height: 72px;
+                margin-bottom: 40px;
+            }
+            .icon img {
+                width: 100%;
+                height: 100%;
+                display: block;
+                image-rendering: auto;
+                transition: transform 0.2s ease;
+                cursor: pointer;
+            }
+            .icon img:hover {
+                transform: translateY(-8px);
+            }
+
+            h1 {
+                margin: 0 0 16px;
+                font-size: 24px;
+                font-weight: 600;
+                letter-spacing: 0.1px;
+            }
+
+            .lead {
+                margin: 0 0 8px;
+                font-size: 15px;
+                color: var(--subtle);
+            }
+
+            .code {
+                margin: 8px 0 28px;
+                color: var(--subtle);
+                font-size: 12px;
+                letter-spacing: 0.2px;
+            }
+
+            .actions {
+                display: flex;
+                justify-content: space-between;
+                gap: 12px;
+                width: 100%;
+                margin-top: 20px;
+            }
+
+            .btn {
+                appearance: none;
+                border: 1px solid var(--border);
+                background: var(--btn-bg);
+                padding: 10px 16px;
+                border-radius: 6px;
+                font: inherit;
+                cursor: pointer;
+                transition:
+                    background 0.12s ease,
+                    border-color 0.12s ease,
+                    box-shadow 0.12s ease;
+            }
+            .btn:hover {
+                background: var(--btn-bg-hover);
+            }
+            .btn:active {
+                transform: translateY(1px);
+            }
+
+            .btn.primary {
+                background: var(--blue);
+                color: #fff;
+                border-color: var(--blue);
+            }
+            .btn.primary:hover {
+                filter: brightness(0.95);
+            }
+
+            /* Keep things tidy on narrow screens */
+            @media (max-width: 480px) {
+                .icon {
+                    width: 60px;
+                    height: 60px;
+                }
+                h1 {
+                    font-size: 28px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <main class="wrap">
+            <div class="row">
+                <div class="icon">
+                    <img id="face" src="images/face_sad.png" alt="Sad face" />
+                </div>
+
+                <h1>This site can't be reached</h1>
+
+                <p class="lead">
+                    Only joking, you have reached
+                    <strong>hanswillemgijzel.com</strong>.
+                </p>
+
+                <p class="code">CLICK_ON_THE_SAD_FACE</p>
+
+                <div class="actions">
+                    <button class="btn" type="button">Details</button>
+                    <button
+                        class="btn primary"
+                        type="button"
+                        onclick="location.reload()"
+                    >
+                        Reload
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <script>
+            // Preload happy face to avoid first-hover flicker
+            new Image().src = "images/face_happy.png";
+
+            const img = document.getElementById("face");
+            const SAD = "images/face_sad.png";
+            const HAPPY = "images/face_happy.png";
+
+            img.addEventListener("mouseenter", () => {
+                img.src = HAPPY;
+                img.alt = "Happy face";
+            });
+            img.addEventListener("mouseleave", () => {
+                img.src = SAD;
+                img.alt = "Sad face";
+            });
+
+            // Make keyboard focus also preview happy state for accessibility
+            img.addEventListener(
+                "focus",
+                () => {
+                    img.src = HAPPY;
+                },
+                true,
+            );
+            img.addEventListener(
+                "blur",
+                () => {
+                    img.src = SAD;
+                },
+                true,
+            );
+        </script>
+    </body>
+</html>
