@@ -14,6 +14,15 @@
                 --btn-bg: #f8f9fa;
                 --btn-bg-hover: #eef0f1;
             }
+            body.inverted {
+                --text: #ffffff;
+                --subtle: #a8aaad;
+                --blue: #ff4081;
+                --border: #5f6368;
+                --bg: #000000;
+                --btn-bg: #303134;
+                --btn-bg-hover: #3c4043;
+            }
             * {
                 box-sizing: border-box;
             }
@@ -75,6 +84,9 @@
                 margin: 0 0 8px;
                 font-size: 15px;
                 color: var(--subtle);
+            }
+            .lead a:hover {
+                text-decoration: underline;
             }
 
             .code {
@@ -151,6 +163,7 @@
 
                 <div class="actions">
                     <button
+                        id="actionBtn"
                         class="btn primary"
                         type="button"
                         onclick="location.reload()"
@@ -166,35 +179,71 @@
             new Image().src = "images/face_happy.png";
 
             const img = document.getElementById("face");
+            const heading = document.querySelector("h1");
+            const leadText = document.querySelector(".lead");
+            const codeText = document.querySelector(".code");
+            const actionBtn = document.getElementById("actionBtn");
             
-            // Open new_page.html when face is clicked
-            img.addEventListener('click', () => {
-                window.location.href = 'new_page.html';
-            });
             const SAD = "images/face_sad.png";
             const HAPPY = "images/face_happy.png";
+            let isInverted = false;
+            
+            // Toggle inverted colors and text when face is clicked
+            img.addEventListener('click', () => {
+                isInverted = document.body.classList.toggle('inverted');
+                
+                if (isInverted) {
+                    // Changed to inverted state
+                    heading.textContent = "This site can be reached";
+                    leadText.innerHTML = 'Hi, I am <strong><a href="https://www.instagram.com/hanswillemgijzel/" target="_blank" style="color: inherit; text-decoration: none;">Hans Willem Gijzel</a></strong>,';
+                    codeText.textContent = "MOTION_DESIGNER_IN_AMSTERDAM.";
+                    actionBtn.textContent = "Reel";
+                    actionBtn.onclick = () => window.open('https://www.youtube.com/watch?v=7bFhmSaEh2o', '_blank');
+                    // Keep face happy
+                    img.src = HAPPY;
+                    img.alt = "Happy face";
+                } else {
+                    // Changed back to normal state
+                    heading.textContent = "This site can't be reached";
+                    leadText.innerHTML = "Only joking, this is <strong>hanswillemgijzel.com</strong>.";
+                    codeText.textContent = "CLICK_ON_THE_SAD_FACE";
+                    actionBtn.textContent = "Reload";
+                    actionBtn.onclick = () => location.reload();
+                    // Return to sad face
+                    img.src = SAD;
+                    img.alt = "Sad face";
+                }
+            });
 
             img.addEventListener("mouseenter", () => {
-                img.src = HAPPY;
-                img.alt = "Happy face";
+                if (!isInverted) {
+                    img.src = HAPPY;
+                    img.alt = "Happy face";
+                }
             });
             img.addEventListener("mouseleave", () => {
-                img.src = SAD;
-                img.alt = "Sad face";
+                if (!isInverted) {
+                    img.src = SAD;
+                    img.alt = "Sad face";
+                }
             });
 
             // Make keyboard focus also preview happy state for accessibility
             img.addEventListener(
                 "focus",
                 () => {
-                    img.src = HAPPY;
+                    if (!isInverted) {
+                        img.src = HAPPY;
+                    }
                 },
                 true,
             );
             img.addEventListener(
                 "blur",
                 () => {
-                    img.src = SAD;
+                    if (!isInverted) {
+                        img.src = SAD;
+                    }
                 },
                 true,
             );
