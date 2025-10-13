@@ -66,11 +66,21 @@
                 height: 100%;
                 display: block;
                 image-rendering: auto;
-                transition: transform 0.2s ease;
                 cursor: pointer;
             }
-            .icon img:hover {
-                transform: translateY(-8px);
+            .icon img.jumping {
+                animation: jumpOnce 0.4s ease;
+            }
+            @keyframes jumpOnce {
+                0% {
+                    transform: translateY(0);
+                }
+                50% {
+                    transform: translateY(-8px);
+                }
+                100% {
+                    transform: translateY(0);
+                }
             }
 
             h1 {
@@ -159,7 +169,7 @@
                     <strong>hanswillemgijzel.com</strong>.
                 </p>
 
-                <p class="code">CLICK_ON_THE_SAD_FACE</p>
+                <p class="code">ERR_CLICK_ON_THE_SAD_FACE</p>
 
                 <div class="actions">
                     <button
@@ -182,11 +192,16 @@
             const heading = document.querySelector("h1");
             const leadText = document.querySelector(".lead");
             const codeText = document.querySelector(".code");
+            // Capture initial content so we don't duplicate strings in JS
+            const initialHeadingText = heading.textContent;
+            const initialLeadHTML = leadText.innerHTML;
+            const initialCodeText = codeText.textContent;
             const actionBtn = document.getElementById("actionBtn");
             
             const SAD = "images/face_sad.png";
             const HAPPY = "images/face_happy.png";
             let isInverted = false;
+            let sadTimeout = null;
             
             // Toggle inverted colors and text when face is clicked
             img.addEventListener('click', () => {
@@ -203,10 +218,10 @@
                     img.src = HAPPY;
                     img.alt = "Happy face";
                 } else {
-                    // Changed back to normal state
-                    heading.textContent = "This site can't be reached";
-                    leadText.innerHTML = "Only joking, this is <strong>hanswillemgijzel.com</strong>.";
-                    codeText.textContent = "CLICK_ON_THE_SAD_FACE";
+                    // Changed back to normal state (restore initial DOM content)
+                    heading.textContent = initialHeadingText;
+                    leadText.innerHTML = initialLeadHTML;
+                    codeText.textContent = initialCodeText;
                     actionBtn.textContent = "Reload";
                     actionBtn.onclick = () => location.reload();
                     // Return to sad face
@@ -217,14 +232,32 @@
 
             img.addEventListener("mouseenter", () => {
                 if (!isInverted) {
+                    // Clear any pending timeout to return to sad
+                    if (sadTimeout) {
+                        clearTimeout(sadTimeout);
+                        sadTimeout = null;
+                    }
                     img.src = HAPPY;
                     img.alt = "Happy face";
+                    // Start jump animation and let it finish even if mouse leaves
+                    img.classList.add('jumping');
                 }
             });
             img.addEventListener("mouseleave", () => {
                 if (!isInverted) {
-                    img.src = SAD;
-                    img.alt = "Sad face";
+                    // Delay 1 second before returning to sad face
+                    sadTimeout = setTimeout(() => {
+                        img.src = SAD;
+                        img.alt = "Sad face";
+                        sadTimeout = null;
+                    }, 1000);
+                }
+            });
+
+            // Remove the jumping class when the animation completes so it can be retriggered
+            img.addEventListener('animationend', (e) => {
+                if (e.animationName === 'jumpOnce') {
+                    img.classList.remove('jumping');
                 }
             });
 
@@ -233,6 +266,10 @@
                 "focus",
                 () => {
                     if (!isInverted) {
+                        if (sadTimeout) {
+                            clearTimeout(sadTimeout);
+                            sadTimeout = null;
+                        }
                         img.src = HAPPY;
                     }
                 },
@@ -242,7 +279,11 @@
                 "blur",
                 () => {
                     if (!isInverted) {
-                        img.src = SAD;
+                        sadTimeout = setTimeout(() => {
+                            img.src = SAD;
+                            img.alt = "Sad face";
+                            sadTimeout = null;
+                        }, 1000);
                     }
                 },
                 true,
