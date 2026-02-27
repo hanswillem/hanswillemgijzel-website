@@ -14,21 +14,11 @@
                 --btn-bg: #f8f9fa;
                 --btn-bg-hover: #eef0f1;
             }
-            body.inverted {
-                --text: #ffffff;
-                --subtle: #a8aaad;
-                --blue: #ff4081;
-                --border: #5f6368;
-                --bg: #000000;
-                --btn-bg: #303134;
-                --btn-bg-hover: #3c4043;
-            }
             * {
                 box-sizing: border-box;
             }
-            html,
-            body {
-                height: 100%;
+            html {
+                scroll-behavior: smooth;
             }
             body {
                 margin: 0;
@@ -42,6 +32,12 @@
                     sans-serif;
                 color: var(--text);
                 background: var(--bg);
+            }
+
+            /* ── Section 1 – error page ── */
+            .section-main {
+                height: 100vh;
+                overflow: hidden;
             }
 
             .wrap {
@@ -72,15 +68,9 @@
                 animation: jumpOnce 0.4s ease;
             }
             @keyframes jumpOnce {
-                0% {
-                    transform: translateY(0);
-                }
-                50% {
-                    transform: translateY(-8px);
-                }
-                100% {
-                    transform: translateY(0);
-                }
+                0%   { transform: translateY(0); }
+                50%  { transform: translateY(-8px); }
+                100% { transform: translateY(0); }
             }
 
             h1 {
@@ -143,6 +133,35 @@
                 filter: brightness(0.95);
             }
 
+            /* ── Section 2 – Reel ── */
+            .section-reel {
+                height: 100vh;
+                background: #000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 40px 24px;
+            }
+
+            /* Embed – sized to ~60% of the viewport while keeping 16:9 */
+            .video-wrapper {
+                width: min(
+                    calc(100vw - 48px),
+                    calc((100vh - 80px) * 0.6 * 16 / 9),
+                    calc((100vw - 48px) * 0.6)
+                );
+                aspect-ratio: 16 / 9;
+                border-radius: 4px;
+                overflow: hidden;
+            }
+
+            .video-wrapper iframe {
+                width: 100%;
+                height: 100%;
+                border: none;
+                display: block;
+            }
+
             /* Keep things tidy on narrow screens */
             @media (max-width: 480px) {
                 .icon {
@@ -156,137 +175,75 @@
         </style>
     </head>
     <body>
-        <main class="wrap">
-            <div class="row">
-                <div class="icon">
-                    <img id="face" src="images/face_sad.png" alt="Sad face" />
+        <section class="section-main">
+            <main class="wrap">
+                <div class="row">
+                    <div class="icon">
+                        <img id="face" src="images/face_sad.png" alt="Sad face" />
+                    </div>
+
+                    <h1>This site can't be reached</h1>
+
+                    <p class="lead">
+                        Just kidding, this is <strong>hanswillemgijzel.com</strong>.
+                    </p>
+
+                    <p class="code"><a href="https://www.instagram.com/hanswillemgijzel/" target="_blank" style="color: inherit; text-decoration: none;">FOLLOW_ME_ON_INSTAGRAM</a></p>
+
+                    <div class="actions">
+                        <button class="btn primary" type="button" id="reelBtn">Reel</button>
+                    </div>
                 </div>
+            </main>
+        </section>
 
-                <h1>This site can't be reached</h1>
-
-                <p class="lead">
-                    Just kidding, this is <strong>hanswillemgijzel.com</strong>.
-                </p>
-
-                <p class="code">TO_ENTER_CLICK_ON_THE_SAD_FACE</p>
-
-                <div class="actions">
-                    <button
-                        id="actionBtn"
-                        class="btn primary"
-                        type="button"
-                        onclick="location.reload()"
-                    >
-                        Reload
-                    </button>
-                </div>
+        <section class="section-reel" id="reel">
+            <div class="video-wrapper">
+                <iframe
+                    src="https://www.youtube-nocookie.com/embed/7bFhmSaEh2o"
+                    title="Hans Willem Gijzel – Showreel"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+                ></iframe>
             </div>
-        </main>
+        </section>
 
         <script>
             // Preload happy face to avoid first-hover flicker
             new Image().src = "images/face_happy.png";
 
             const img = document.getElementById("face");
-            const heading = document.querySelector("h1");
-            const leadText = document.querySelector(".lead");
-            const codeText = document.querySelector(".code");
-            // Capture initial content so we don't duplicate strings in JS
-            const initialHeadingText = heading.textContent;
-            const initialLeadHTML = leadText.innerHTML;
-            const initialCodeText = codeText.textContent;
-            const actionBtn = document.getElementById("actionBtn");
-            
             const SAD = "images/face_sad.png";
             const HAPPY = "images/face_happy.png";
-            let isInverted = false;
             let sadTimeout = null;
-            
-            // Toggle inverted colors and text when face is clicked
-            img.addEventListener('click', () => {
-                isInverted = document.body.classList.toggle('inverted');
-                
-                if (isInverted) {
-                    // Changed to inverted state
-                    heading.textContent = "Hi, I'm Hans Willem Gijzel";
-                    leadText.innerHTML = "Motion Designer in Amsterdam.";
-                    codeText.innerHTML = '<a href="https://www.instagram.com/hanswillemgijzel/" target="_blank" style="color: inherit; text-decoration: none;">FOLLOW_ME_ON_INSTAGRAM</a>';
-                    actionBtn.textContent = "Reel";
-                    actionBtn.onclick = () => window.open('https://www.youtube.com/watch?v=7bFhmSaEh2o', '_blank');
-                    // Keep face happy
-                    img.src = HAPPY;
-                    img.alt = "Happy face";
-                } else {
-                    // Changed back to normal state (restore initial DOM content)
-                    heading.textContent = initialHeadingText;
-                    leadText.innerHTML = initialLeadHTML;
-                    codeText.textContent = initialCodeText;
-                    actionBtn.textContent = "Reload";
-                    actionBtn.onclick = () => location.reload();
-                    // Return to sad face
-                    img.src = SAD;
-                    img.alt = "Sad face";
-                }
+
+            // Reel button smoothly scrolls to the reel section
+            document.getElementById("reelBtn").addEventListener("click", () => {
+                document.getElementById("reel").scrollIntoView({ behavior: "smooth" });
             });
 
             img.addEventListener("mouseenter", () => {
-                if (!isInverted) {
-                    // Clear any pending timeout to return to sad
-                    if (sadTimeout) {
-                        clearTimeout(sadTimeout);
-                        sadTimeout = null;
-                    }
-                    img.src = HAPPY;
-                    img.alt = "Happy face";
-                    // Start jump animation and let it finish even if mouse leaves
-                    img.classList.add('jumping');
+                if (sadTimeout) {
+                    clearTimeout(sadTimeout);
+                    sadTimeout = null;
                 }
+                img.src = HAPPY;
+                img.alt = "Happy face";
+                img.classList.add("jumping");
             });
             img.addEventListener("mouseleave", () => {
-                if (!isInverted) {
-                    // Delay 1 second before returning to sad face
-                    sadTimeout = setTimeout(() => {
-                        img.src = SAD;
-                        img.alt = "Sad face";
-                        sadTimeout = null;
-                    }, 1000);
-                }
+                sadTimeout = setTimeout(() => {
+                    img.src = SAD;
+                    img.alt = "Sad face";
+                    sadTimeout = null;
+                }, 1000);
             });
 
-            // Remove the jumping class when the animation completes so it can be retriggered
-            img.addEventListener('animationend', (e) => {
-                if (e.animationName === 'jumpOnce') {
-                    img.classList.remove('jumping');
+            img.addEventListener("animationend", (e) => {
+                if (e.animationName === "jumpOnce") {
+                    img.classList.remove("jumping");
                 }
             });
-
-            // Make keyboard focus also preview happy state for accessibility
-            img.addEventListener(
-                "focus",
-                () => {
-                    if (!isInverted) {
-                        if (sadTimeout) {
-                            clearTimeout(sadTimeout);
-                            sadTimeout = null;
-                        }
-                        img.src = HAPPY;
-                    }
-                },
-                true,
-            );
-            img.addEventListener(
-                "blur",
-                () => {
-                    if (!isInverted) {
-                        sadTimeout = setTimeout(() => {
-                            img.src = SAD;
-                            img.alt = "Sad face";
-                            sadTimeout = null;
-                        }, 1000);
-                    }
-                },
-                true,
-            );
         </script>
     </body>
 </html>
